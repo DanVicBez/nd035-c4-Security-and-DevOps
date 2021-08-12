@@ -22,64 +22,71 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Table(name = "user_order")
 public class UserOrder {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonProperty
-	@Column
-	private Long id;
-	
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JsonProperty
-	@Column
-    private List<Item> items;
-	
-	@ManyToOne
-	@JoinColumn(name="user_id", nullable = false, referencedColumnName = "id")
-	@JsonProperty
-    private User user;
-	
-	@JsonProperty
-	@Column
-	private BigDecimal total;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @JsonProperty
+  @Column
+  private Long id;
 
-	public Long getId() {
-		return id;
-	}
+  @ManyToMany(cascade = CascadeType.ALL)
+  @JsonProperty
+  @Column
+  private List<Item> items;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+  @ManyToOne
+  @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
+  @JsonProperty
+  private User user;
 
-	public List<Item> getItems() {
-		return items;
-	}
+  @JsonProperty
+  @Column
+  private BigDecimal total;
 
-	public void setItems(List<Item> items) {
-		this.items = items;
-	}
+  public Long getId() {
+    return id;
+  }
 
-	public User getUser() {
-		return user;
-	}
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-	public void setUser(User user) {
-		this.user = user;
-	}
-	
-	public BigDecimal getTotal() {
-		return total;
-	}
+  public List<Item> getItems() {
+    return items;
+  }
 
-	public void setTotal(BigDecimal total) {
-		this.total = total;
-	}
+  public void setItems(List<Item> items) {
+    this.items = items;
+  }
 
-	public static UserOrder createFromCart(Cart cart) {
-		UserOrder order = new UserOrder();
-		order.setItems(cart.getItems().stream().collect(Collectors.toList()));
-		order.setTotal(cart.getTotal());
-		order.setUser(cart.getUser());
-		return order;
-	}
-	
+  public User getUser() {
+    return user;
+  }
+
+  public void setUser(User user) {
+    this.user = user;
+  }
+
+  public BigDecimal getTotal() {
+    return total;
+  }
+
+  public void setTotal(BigDecimal total) {
+    this.total = total;
+  }
+
+  public static UserOrder createFromCart(Cart cart) {
+    UserOrder order = new UserOrder();
+    order.setItems(cart.getItems().stream().collect(Collectors.toList()));
+    order.setTotal(cart.getTotal());
+    order.setUser(cart.getUser());
+    return order;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder();
+    builder.append("UserOrder [id=").append(id).append(", items=").append(items).append(", user=")
+        .append(user).append(", total=").append(total).append("]");
+    return builder.toString();
+  }
 }

@@ -1,9 +1,8 @@
 package com.example.demo.controllers;
 
-import java.util.Optional;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.example.demo.model.persistence.Cart;
 import com.example.demo.model.persistence.User;
 import com.example.demo.model.persistence.repositories.CartRepository;
@@ -22,6 +20,7 @@ import com.example.demo.model.requests.CreateUserRequest;
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
+  private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
   @Autowired
   private UserRepository userRepository;
@@ -45,8 +44,11 @@ public class UserController {
 
   @PostMapping("/create")
   public ResponseEntity<User> createUser(@RequestBody CreateUserRequest createUserRequest) {
+    logger.info("Creating user");
     User user = new User();
     user.setUsername(createUserRequest.getUsername());
+    logger.debug("Username: {}", user.getUsername());
+    
     Cart cart = new Cart();
     cartRepository.save(cart);
     user.setCart(cart);
@@ -60,6 +62,7 @@ public class UserController {
     user.setPassword(bCryptPasswordEncoder.encode(password));
 
     userRepository.save(user);
+    logger.info("Successfully created user");
     return ResponseEntity.ok(user);
   }
 }
