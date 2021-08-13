@@ -77,5 +77,4 @@ public class CartController {
     logger.info("Successfully removed from cart");
     return ResponseEntity.ok(cart);
   }
-
 }
