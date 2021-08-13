@@ -44,10 +44,15 @@ public class UserController {
 
   @PostMapping("/create")
   public ResponseEntity<User> createUser(@RequestBody CreateUserRequest createUserRequest) {
-    logger.info("Creating user");
+    logger.debug("Creating user");
     User user = new User();
     user.setUsername(createUserRequest.getUsername());
     logger.debug("Username: {}", user.getUsername());
+    
+    if (userRepository.findByUsername(user.getUsername()) != null) {
+      logger.info("Error creating user {}: username taken", user.getUsername());
+      return ResponseEntity.badRequest().build();
+    }
     
     Cart cart = new Cart();
     cartRepository.save(cart);
@@ -56,13 +61,14 @@ public class UserController {
     String password = createUserRequest.getPassword();
     String confirmPassword = createUserRequest.getConfirmPassword();
     if (password.length() < 7 || !password.equals(confirmPassword)) {
+      logger.info("Error creating user {}: password constraints failed", user.getUsername());
       return ResponseEntity.badRequest().build();
     }
 
     user.setPassword(bCryptPasswordEncoder.encode(password));
 
     userRepository.save(user);
-    logger.info("Successfully created user");
+    logger.info("Successfully created user {}", user.getUsername());
     return ResponseEntity.ok(user);
   }
 }
